@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: spring_board
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+server:
+  servlet:
+    jsp:
+      init-parameters:
+        development: true
