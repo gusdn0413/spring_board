@@ -13,7 +13,7 @@ public class HomeController {
     // @GetMapping(주소)
     // @PostMapping(주소)
     @GetMapping("/")
-    public String home() {
+    public String showIndex() {
         System.out.println("인덱스 ㄱㄱ");
         return "index";
     }
