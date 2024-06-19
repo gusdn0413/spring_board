@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="container-fluid h-100">
-    <form action="/user/register" method="POST">
+    <form action="/user/register" method="post">
         <div class="row justify-content-center">
             <div class="col-4">
                 <label for="username">아이디</label>
