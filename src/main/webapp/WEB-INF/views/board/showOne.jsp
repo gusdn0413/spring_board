@@ -61,6 +61,57 @@
                     </td>
                 </tr>
             </table>
+            <table class="table-primary table-striped">
+                <tr class="text-center">
+                    <td>댓글</td>
+                </tr>
+                <c:forEach items="${replyList}" var="reply">
+                    <tr>
+                        <td>${reply.id}</td>
+                        <td>${reply.nickname}</td>
+                        <c:choose>
+                            <c:when test="${reply.writerId eq login.id}">
+                                <td>
+                                    <form action="/reply/update/${reply.id}" method="post">
+                                        <input type="text" class="form-control" name="content"
+                                               value="${reply.content}">
+                                        <td>
+                                            <span>
+                                                날짜 : <fmt:formatDate value="${reply.modifyDate}" pattern="y년 M월 d일"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <input type="submit" class="btn btn-outline-primary" value="수정">
+                                        </td>
+                                        <td>
+                                            <a href="/reply/delete/${reply.id}" class="btn btn-outline-warning">삭제</a>
+                                        </td>
+                                    </form>
+                                </td>
+                            </c:when>
+                            <c:otherwise>
+                                <td>
+                                    <input type="text" class="form-control" name="content"
+                                           value="${reply.content}" disabled>
+                                </td>
+                                <td>
+                                    <span>
+                                        날짜 : <fmt:formatDate value="${reply.modifyDate}" pattern="y년 M월 d일"/>
+                                    </span>
+                                </td>
+                            </c:otherwise>
+                        </c:choose>
+                    </tr>
+                </c:forEach>
+                <tr>
+                    <td>
+                        <form action="/reply/insert/${boardDTO.id}" method="post">
+                            <input type="text" name="content" class="form-control" placeholder="댓글">
+                            <input type="submit" class="btn btn-outline-success" value="작성하기">
+                        </form>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </div>

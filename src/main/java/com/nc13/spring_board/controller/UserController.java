@@ -44,6 +44,8 @@ public class UserController {
             redirectAttributes.addFlashAttribute("message", "중복된 아이디 불가능");
             return "redirect:/showMessage";
         }
+
+        userService.register(userDTO);
         return "redirect:/";
     }
 }

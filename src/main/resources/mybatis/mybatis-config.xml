@@ -9,5 +9,6 @@
     <typeAliases>
         <typeAlias type="com.nc13.spring_board.model.UserDTO" alias="userDTO"/>
         <typeAlias type="com.nc13.spring_board.model.BoardDTO" alias="boardDTO"/>
+        <typeAlias type="com.nc13.spring_board.model.ReplyDTO" alias="replyDTO"/>
     </typeAliases>
 </configuration>
