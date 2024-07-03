@@ -19,11 +19,15 @@ public class UserService {
         return sqlSession.selectOne(NAMESPACE + "auth", userDTO);
     }
 
-    public boolean validateUsername(UserDTO userDTO) {
-        return sqlSession.selectOne(NAMESPACE + "selectByUsername", userDTO) == null;
+    public boolean validateUsername(String username) {
+        return sqlSession.selectOne(NAMESPACE + "selectByUsername", username) == null;
     }
 
     public void register(UserDTO userDTO) {
         sqlSession.insert(NAMESPACE + "register", userDTO);
+    }
+
+    public UserDTO selectByUsername(String username) {
+        return sqlSession.selectOne(NAMESPACE + "selectByUsername", username);
     }
 }

@@ -4,6 +4,7 @@ import com.nc13.spring_board.model.UserDTO;
 import com.nc13.spring_board.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +17,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
 
     private final UserService userService;
+    private final BCryptPasswordEncoder encoder;
 
     // 사용자가 로그인을 할 시 실행할 auth method
     @PostMapping("auth")
     public String auth(UserDTO userDTO, HttpSession session) {
+        System.out.println("UserController.auth()");
         UserDTO auth = userService.auth(userDTO);
         if (auth != null) {
             session.setAttribute("login", auth);
@@ -38,7 +41,8 @@ public class UserController {
     @PostMapping("register")
     public String register(UserDTO userDTO, RedirectAttributes redirectAttributes) {
         System.out.println("userDTO = " + userDTO);
-        if (userService.validateUsername(userDTO)) {
+        if (userService.validateUsername(userDTO.getUsername())) {
+            userDTO.setPassword(encoder.encode(userDTO.getPassword()));
             System.out.println("슛");
         } else {
             redirectAttributes.addFlashAttribute("message", "중복된 아이디 불가능");

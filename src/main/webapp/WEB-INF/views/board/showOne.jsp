@@ -9,7 +9,10 @@
           crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
 <div class="container-fluid">
@@ -51,7 +54,7 @@
                     <tr class="text-center">
                         <td class="text-center" colspan="3">
                             <a class="btn btn-outline-success" href="/board/update/${boardDTO.id}">수정하기</a>
-                            <a class="btn btn-outline-danger" href="/board/delete/${boardDTO.id}">삭제하기</a>
+                            <button class="btn btn-outline-danger" onclick="deleteBoard(${boardDTO.id})">삭제하기</button>
                         </td>
                     </tr>
                 </c:if>
@@ -115,5 +118,26 @@
         </div>
     </div>
 </div>
+<script>
+    function deleteBoard(id) {
+        console.log(id);
+        Swal.fire({
+            title: '정말 삭제하시겠습니까?',
+            showCancelButton: true,
+            confirmButtonText: '삭제하기',
+            cancelButtonText: '취소',
+            icon: 'warning'
+        }).then((result) => {
+            console.log(result);
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: '삭제되었습니다.'
+                }).then((result) => {
+                    location.href = '/board/delete/' + id;
+                })
+            }
+        });
+    }
+</script>
 </body>
 </html>

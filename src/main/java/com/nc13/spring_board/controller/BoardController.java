@@ -8,16 +8,24 @@ import com.nc13.spring_board.service.BoardService;
 import com.nc13.spring_board.service.ReplyService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.catalina.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,11 +40,8 @@ public class BoardController {
     }
 
     @GetMapping("showAll/{pageNo}")
-    public String showAll(HttpSession session, Model model, @PathVariable int pageNo) {
-        UserDTO login = (UserDTO) session.getAttribute("login");
-        if (login == null) {
-            return "redirect:/";
-        }
+    public String showAll(Model model, @PathVariable int pageNo) {
+
         // 가장 마지막 페이지의 번호
         int maxPage = boardService.selectMaxPage();
         model.addAttribute("maxPage", maxPage);
@@ -86,24 +91,15 @@ public class BoardController {
     }
 
     @GetMapping("write")
-    public String showWrite(HttpSession session) {
-        UserDTO login = (UserDTO) session.getAttribute("login");
-        if (login == null) {
-            return "redirect:/";
-        }
+    public String showWrite() {
 
         return "board/write";
     }
 
     @PostMapping("write")
-    public String write(HttpSession session, BoardDTO boardDTO) {
-        UserDTO login = (UserDTO) session.getAttribute("login");
-        if (login == null) {
-            return "redirect:/";
-        }
-
+    public String write(BoardDTO boardDTO,Authentication authentication) {
+        UserDTO login = (UserDTO) authentication.getPrincipal();
         boardDTO.setWriterId(login.getId());
-
         boardService.insert(boardDTO);
 
         return "redirect:/board/showOne/" + boardDTO.getId();
@@ -200,5 +196,46 @@ public class BoardController {
         boardService.delete(boardId);
 
         return "redirect:/board/showAll";
+    }
+
+    // Restful API 로써 JSON 의 결과값을 리턴해야하는 경우 매핑 어노테이션 위에 ResponseBody 어노테이션을 씀
+    @ResponseBody
+    @PostMapping("uploads")
+    public Map<String, Object> uploads(MultipartHttpServletRequest request) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        String uploadPath = "";
+
+        MultipartFile file = request.getFile("upload");
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf("."));
+        String uploadName = UUID.randomUUID() + extension;
+
+        String realPath = request.getServletContext().getRealPath("board/uploads/");
+        Path realDir = Paths.get(realPath);
+
+        if (!Files.exists(realDir)) {
+            try {
+                Files.createDirectories(realDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        File uploadFile = new File(realPath + uploadName);
+
+        try {
+            file.transferTo(uploadFile);
+        } catch (IOException e) {
+            System.out.println("파일 전송 중 에러");
+            e.printStackTrace();
+        }
+
+        uploadPath = "/board/uploads/" + uploadName;
+
+        resultMap.put("uploaded", true);
+        resultMap.put("url", uploadPath);
+
+        return resultMap;
     }
 }

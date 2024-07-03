@@ -11,11 +11,15 @@ spring:
     username: root
     password: Qkr1593574!s
 
+  servlet:
+    multipart:
+      max-file-size: 20MB
 server:
   servlet:
     jsp:
       init-parameters:
         development: true
+
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
   mapper-locations: classpath:/mybatis/mappers/*.xml

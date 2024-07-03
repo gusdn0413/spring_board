@@ -9,11 +9,15 @@
           crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://ckeditor.com/apps/ckfiinder/3.5.0/ckfinder.js"></script>
 </head>
 <body>
 <div class="container-fluid">
-    <form action="/board/write" method="post">
+    <form method="post" action="/board/write" enctype="multipart/form-data">
         <div class="table">
             <div class="row justify-content-center mb-3">
                 <div class="col-6">
@@ -25,7 +29,13 @@
             </div>
             <div class="row justify-content-center mb-3">
                 <div class="col-6">
-                    <textarea name="content" id="input_content" class="form-control" placeholder="내용"></textarea>
+                    <textarea name="content" id="input_content"></textarea>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-6">
+                    <label for="input_file">첨부 파일</label>
+                    <input type="file" class="form-control" id="input_file" name="file">
                 </div>
             </div>
             <div class="row justify-content-center">
@@ -36,5 +46,15 @@
         </div>
     </form>
 </div>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#input_content'),{
+            ckfinder: {
+                uploadUrl: '/board/uploads'
+            }
+        })
+        .catch(error => {
+            console.log(error);})
+</script>
 </body>
 </html>
